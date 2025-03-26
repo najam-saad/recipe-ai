@@ -1,12 +1,13 @@
 [site]
 bucket = ".next"
+pages_build_output_dir = ".next"
 
 [build]
 command = "npm run build"
 output_directory = ".next/static"
 
 [build.environment]
-NODE_VERSION = "20"
+NODE_VERSION = "20.9.0"
 
 [env.production]
 name = "recipe-ai-prod"
