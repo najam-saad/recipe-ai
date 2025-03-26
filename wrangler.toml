@@ -1,25 +1,11 @@
-[site]
-bucket = "out"
-pages_build_output_dir = "out"
-
+# Build configuration
 [build]
 command = "npm run build"
-output_directory = ".next/static"
 
+# Environment variables
 [build.environment]
 NODE_VERSION = "20.9.0"
 
-[env.production]
-name = "recipe-ai-prod"
-routes = [
-  { pattern = "/*", zone_name = "example.com" }
-]
-
-[[redirects]]
-from = "/*"
-to = "/index.html"
-status = 200
-
-# Specific for Pages integration
-[pages]
-build_output_dir = "out" 
+# Output directory configuration
+[site]
+bucket = "out" 

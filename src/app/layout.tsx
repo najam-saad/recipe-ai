@@ -94,6 +94,10 @@ export default function RootLayout({
         {/* Add theme color for browser UI */}
         <meta name="theme-color" content="#e53e3e" />
         
+        {/* Favicon and Apple Touch Icons */}
+        <link rel="icon" href="/icons/food-icon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/icons/food-icon.svg" />
+        
         {/* JSON-LD structured data */}
         <script
           type="application/ld+json"
