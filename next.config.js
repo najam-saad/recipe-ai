@@ -12,6 +12,10 @@ const nextConfig = {
     unoptimized: true,
     domains: ['example.com'],
   },
+  experimental: {
+    // Enable to improve compatibility with Cloudflare Pages
+    serverComponentsExternalPackages: ['next-sitemap'],
+  },
 };
 
 module.exports = nextConfig; 
