@@ -18,4 +18,8 @@ routes = [
 [[redirects]]
 from = "/*"
 to = "/index.html"
-status = 200 
+status = 200
+
+# Specific for Pages integration
+[pages]
+build_output_dir = "out" 

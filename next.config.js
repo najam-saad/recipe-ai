@@ -12,10 +12,7 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  experimental: {
-    // Enable to improve compatibility with Cloudflare Pages
-    serverComponentsExternalPackages: ['next-sitemap'],
-  },
+  serverExternalPackages: ['next-sitemap'],
   // Ensure trailing slashes for better compatibility
   trailingSlash: true,
 };
