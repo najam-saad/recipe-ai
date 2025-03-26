@@ -5,6 +5,9 @@ import { getAllRecipes } from '@/lib/recipes';
 import type { Recipe } from '@/components/RecipeDetail';
 import { HorizontalAdBanner, InFeedAdBanner } from '@/components/AdBanner';
 
+// Make this page static for export
+export const dynamic = 'force-static';
+
 export const metadata: Metadata = {
   title: 'All Recipes | Browse Our Collection | Recipe Generator',
   description: 'Browse our complete collection of delicious recipes. Find recipes by category, ingredients, or preparation time. Discover new meals for every occasion.',
@@ -98,67 +101,18 @@ const RecipeCard = ({ recipe }: { recipe: Recipe }) => {
   );
 };
 
-export default async function RecipesPage({
-  searchParams,
-}: {
-  searchParams?: { 
-    category?: string;
-    sort?: string;
-    search?: string;
-  };
-}) {
+export default async function RecipesPage() {
   const allRecipes = await getAllRecipes();
-  const { category, sort, search } = searchParams || {};
-  
-  // Filter recipes based on search params
-  let recipes = [...allRecipes];
-  
-  // Apply category filter if provided
-  if (category) {
-    recipes = recipes.filter(recipe => 
-      recipe.category?.toLowerCase() === category.toLowerCase()
-    );
-  }
-  
-  // Apply search if provided
-  if (search) {
-    const searchLower = search.toLowerCase();
-    recipes = recipes.filter(recipe => 
-      recipe.name.toLowerCase().includes(searchLower) ||
-      recipe.description?.toLowerCase().includes(searchLower) ||
-      recipe.ingredients.some(ingredient => ingredient.toLowerCase().includes(searchLower)) ||
-      recipe.category?.toLowerCase().includes(searchLower)
-    );
-  }
-  
-  // Apply sorting if provided
-  if (sort) {
-    switch (sort) {
-      case 'newest':
-        recipes.sort((a, b) => new Date(b.publishedDate || '').getTime() - new Date(a.publishedDate || '').getTime());
-        break;
-      case 'oldest':
-        recipes.sort((a, b) => new Date(a.publishedDate || '').getTime() - new Date(b.publishedDate || '').getTime());
-        break;
-      case 'quickest':
-        recipes.sort((a, b) => {
-          const aTime = parseInt(a.preparationTime.replace(/\D/g, ''), 10) + parseInt(a.cookingTime.replace(/\D/g, ''), 10);
-          const bTime = parseInt(b.preparationTime.replace(/\D/g, ''), 10) + parseInt(b.cookingTime.replace(/\D/g, ''), 10);
-          return aTime - bTime;
-        });
-        break;
-      default:
-        // Default sorting - by newest
-        recipes.sort((a, b) => new Date(b.publishedDate || '').getTime() - new Date(a.publishedDate || '').getTime());
-    }
-  } else {
-    // Default sorting if none provided
-    recipes.sort((a, b) => new Date(b.publishedDate || '').getTime() - new Date(a.publishedDate || '').getTime());
-  }
   
   // Get unique categories for filter
   const categories = Array.from(new Set(allRecipes.map(recipe => recipe.category).filter(Boolean)));
   
+  // Default sort by newest first
+  const sortedRecipes = [...allRecipes].sort((a, b) => 
+    new Date(b.publishedDate || '').getTime() - new Date(a.publishedDate || '').getTime()
+  );
+  
+  // All filtering and sorting will be done client-side with JavaScript
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 pb-20">
       {/* Header */}
@@ -190,101 +144,44 @@ export default async function RecipesPage({
           </p>
         </div>
         
-        {/* Category Pills */}
+        {/* Category Pills - Static version */}
         <div className="mb-8 overflow-x-auto">
           <div className="flex space-x-2 pb-2">
-            <Link 
-              href="/recipes" 
-              className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium ${!category ? 'bg-red-500 text-white' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'}`}
+            <a 
+              href="#" 
+              className="whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium bg-red-500 text-white"
+              data-category="all"
+              id="category-all"
             >
               All Recipes
-            </Link>
+            </a>
             {categories.map((cat) => (
               cat && (
-                <Link 
+                <a 
                   key={cat} 
-                  href={`/recipes?category=${cat}`}
-                  className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium ${category === cat ? 'bg-red-500 text-white' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'}`}
+                  href="#"
+                  data-category={cat}
+                  id={`category-${cat}`}
+                  className="whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-800 hover:bg-gray-200"
                 >
                   {cat}
-                </Link>
+                </a>
               )
             ))}
           </div>
         </div>
         
-        {/* Search and Filter Controls */}
-        <div className="mb-8 bg-white p-4 rounded-lg shadow-sm">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-grow">
-              <form action="/recipes" method="get">
-                {category && <input type="hidden" name="category" value={category} />}
-                <input 
-                  type="text" 
-                  name="search"
-                  placeholder="Search recipes..." 
-                  className="input-modern w-full" 
-                  defaultValue={search || ''}
-                />
-              </form>
-            </div>
-            <div className="flex gap-2">
-              {/* Preserve category parameter when changing sort */}
-              <select 
-                className="input-modern"
-                onChange={(e) => {
-                  const url = new URL(window.location.href);
-                  if (e.target.value) {
-                    url.searchParams.set('sort', e.target.value);
-                  } else {
-                    url.searchParams.delete('sort');
-                  }
-                  window.location.href = url.toString();
-                }}
-                defaultValue={sort || ''}
-              >
-                <option value="">Sort By</option>
-                <option value="newest">Newest First</option>
-                <option value="oldest">Oldest First</option>
-                <option value="quickest">Quickest to Make</option>
-              </select>
-            </div>
-          </div>
+        {/* Static Recipe Grid - Will be filtered with client-side JavaScript */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {sortedRecipes.map((recipe, index) => (
+            <>
+              <RecipeCard key={recipe.id} recipe={recipe} />
+              {index > 0 && (index + 1) % 6 === 0 && (
+                <InFeedAdBanner key={`ad-${index}`} />
+              )}
+            </>
+          ))}
         </div>
-        
-        {/* Results count */}
-        <div className="mb-6 text-gray-600">
-          <p>
-            Showing {recipes.length} {recipes.length === 1 ? 'recipe' : 'recipes'}
-            {category ? ` in ${category}` : ''}
-            {search ? ` matching "${search}"` : ''}
-          </p>
-        </div>
-        
-        {/* Recipe Grid */}
-        {recipes.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {recipes.map((recipe, index) => (
-              <>
-                <RecipeCard key={recipe.id} recipe={recipe} />
-                {index > 0 && (index + 1) % 6 === 0 && (
-                  <InFeedAdBanner key={`ad-${index}`} />
-                )}
-              </>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <div className="text-5xl mb-4">🔍</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">No recipes found</h2>
-            <p className="text-gray-600 mb-6">
-              Try adjusting your search or filter criteria to find more recipes.
-            </p>
-            <Link href="/recipes" className="btn btn-primary">
-              View All Recipes
-            </Link>
-          </div>
-        )}
         
         {/* SEO Optimized Content Section */}
         <section className="mt-16 pt-12 border-t border-gray-200">
