@@ -33,6 +33,13 @@ export const metadata: Metadata = {
     title: "Recipe Generator | Cook With What You Have",
     description: "Get personalized recipes based on ingredients you already have in your kitchen. Your cooking assistant.",
   },
+  icons: {
+    icon: [
+      { url: '/icons/food-icon.svg' },
+    ],
+    shortcut: '/icons/food-icon.svg',
+    apple: '/icons/food-icon.svg',
+  }
 };
 
 const Footer = () => (
