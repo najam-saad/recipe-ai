@@ -1,0 +1,10 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://recipe-ai.vercel.app
+
+# Sitemaps
+Sitemap: https://recipe-ai.vercel.app/sitemap.xml
+Sitemap: https://recipe-ai.vercel.app/sitemap-recipes.xml

@@ -1,0 +1,20 @@
+[site]
+bucket = ".next"
+
+[build]
+command = "npm run build"
+output_directory = ".next/static"
+
+[build.environment]
+NODE_VERSION = "20"
+
+[env.production]
+name = "recipe-ai-prod"
+routes = [
+  { pattern = "/*", zone_name = "example.com" }
+]
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200 
