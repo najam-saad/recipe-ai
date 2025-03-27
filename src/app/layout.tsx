@@ -119,21 +119,22 @@ export default function RootLayout({
         {/* Google AdSense Code */}
         <script
           async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9262259592522097"
           crossOrigin="anonymous"
         ></script>
         {/* ☝️ Replace XXXXXXXXXXXXXXXX with your actual publisher ID from AdSense dashboard */}
         
-        {/* Google Auto Ads Configuration - Uncomment and customize when ready */}
-        {/* 
-        <script>
-          (adsbygoogle = window.adsbygoogle || []).push({
-            google_ad_client: "ca-pub-XXXXXXXXXXXXXXXX", // Replace with your actual publisher ID
-            enable_page_level_ads: true,
-            overlays: { bottom: true } // Optional: enables video ads with overlay
-          });
-        </script>
-        */}
+        {/* Google Auto Ads Configuration - Uncomment when ready */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (adsbygoogle = window.adsbygoogle || []).push({
+                google_ad_client: "ca-pub-9262259592522097", // Replace with your actual publisher ID
+                enable_page_level_ads: true
+              });
+            `
+          }}
+        />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}>
         <div className="flex-grow">
