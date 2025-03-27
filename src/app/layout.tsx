@@ -122,14 +122,13 @@ export default function RootLayout({
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9262259592522097"
           crossOrigin="anonymous"
         ></script>
-        {/* ☝️ Replace XXXXXXXXXXXXXXXX with your actual publisher ID from AdSense dashboard */}
         
-        {/* Google Auto Ads Configuration - Uncomment when ready */}
+        {/* Google Auto Ads Configuration */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (adsbygoogle = window.adsbygoogle || []).push({
-                google_ad_client: "ca-pub-9262259592522097", // Replace with your actual publisher ID
+                google_ad_client: "ca-pub-9262259592522097",
                 enable_page_level_ads: true
               });
             `

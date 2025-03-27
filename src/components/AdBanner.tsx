@@ -80,8 +80,8 @@ export const HorizontalAdBanner: React.FC = () => (
   <div className="w-full py-4 bg-gray-50">
     <div className="max-w-screen-xl mx-auto">
       <AdBanner
-        adClient="ca-pub-9262259592522097" // Replace with your AdSense Publisher ID
-        adSlot="1234567890" // Replace with your ad unit ID from AdSense
+        adClient="ca-pub-9262259592522097"
+        adSlot="1234567890"
         adFormat="horizontal"
         className="flex justify-center"
         style={{ minHeight: '90px' }}
@@ -94,8 +94,8 @@ export const HorizontalAdBanner: React.FC = () => (
 export const SidebarAdBanner: React.FC = () => (
   <div className="hidden lg:block w-full">
     <AdBanner
-      adClient="ca-pub-9262259592522097" // IMPORTANT: Replace with your actual AdSense client ID
-      adSlot="0987654321" // IMPORTANT: Replace with your sidebar ad slot ID
+      adClient="ca-pub-9262259592522097"
+      adSlot="0987654321"
       adFormat="vertical"
       style={{ minHeight: '600px' }}
     />
@@ -106,8 +106,8 @@ export const SidebarAdBanner: React.FC = () => (
 export const InContentAdBanner: React.FC = () => (
   <div className="my-8 py-4 border-t border-b border-gray-100">
     <AdBanner
-      adClient="ca-pub-9262259592522097" // IMPORTANT: Replace with your actual AdSense client ID
-      adSlot="5555555555" // IMPORTANT: Replace with your in-content ad slot ID
+      adClient="ca-pub-9262259592522097"
+      adSlot="5555555555"
       style={{ minHeight: '250px' }}
     />
   </div>
@@ -118,8 +118,8 @@ export const InFeedAdBanner: React.FC = () => (
   <div className="card h-full transform transition-transform hover:scale-[1.02] shadow-sm border border-gray-100 bg-gray-50 flex flex-col justify-center items-center">
     <div className="h-full w-full p-4">
       <AdBanner
-        adClient="ca-pub-9262259592522097" // IMPORTANT: Replace with your actual AdSense client ID
-        adSlot="6666666666" // IMPORTANT: Replace with your in-feed ad slot ID
+        adClient="ca-pub-9262259592522097"
+        adSlot="6666666666"
         adFormat="fluid"
         style={{ 
           minHeight: '300px',
@@ -143,7 +143,7 @@ export const VideoAdBanner: React.FC = () => {
       try {
         (window.adsbygoogle = window.adsbygoogle || []).push({
           params: {
-            google_ad_client: "ca-pub-9262259592522097", // IMPORTANT: Replace with your actual AdSense client ID
+            google_ad_client: "ca-pub-9262259592522097",
             enable_page_level_ads: true,
             overlays: {
               bottom: true
@@ -166,8 +166,8 @@ export const VideoAdBanner: React.FC = () => {
         {/* Video player container - AdSense will inject the ad here */}
         <div 
           className="absolute inset-0 bg-gray-100 flex items-center justify-center"
-          data-ad-client="ca-pub-9262259592522097" // IMPORTANT: Replace with your actual AdSense client ID
-          data-ad-slot="VIDEO_SLOT_ID" // IMPORTANT: Replace with your video ad slot ID
+          data-ad-client="ca-pub-9262259592522097"
+          data-ad-slot="VIDEO_SLOT_ID"
           data-ad-format="video"
         >
           <div className="text-gray-400">Video advertisement loading...</div>
