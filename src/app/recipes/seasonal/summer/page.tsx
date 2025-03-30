@@ -26,6 +26,51 @@ export default function SummerRecipesPage() {
         </p>
       </div>
       
+      {/* Chef's Spotlight - Original Recipe */}
+      <section className="mb-16 border-2 border-dashed border-red-200 rounded-xl p-8">
+        <div className="flex flex-col md:flex-row gap-8">
+          <div className="md:w-1/3">
+            <div className="relative h-80 w-full rounded-lg overflow-hidden mb-4">
+              <img 
+                src="https://images.unsplash.com/photo-1567336273898-ebbf9eb3c3bf?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                alt="Heirloom Tomato Galette" 
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute top-0 left-0 bg-red-500 text-white px-3 py-1 text-sm font-medium">
+                Chef's Special
+              </div>
+            </div>
+            <div className="flex gap-2 flex-wrap">
+              <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">30 min prep</span>
+              <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">45 min cook</span>
+              <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Vegetarian</span>
+              <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Serves 6</span>
+            </div>
+          </div>
+          <div className="md:w-2/3">
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">My Heirloom Tomato & Goat Cheese Galette</h2>
+            <p className="italic text-gray-600 mb-4">
+              "This is my signature summer dish that I've perfected over 10 years of farmers' market cooking. The key is using at least 3 different varieties of heirloom tomatoes for complex flavor and visual appeal."
+            </p>
+            <div className="mb-4">
+              <h3 className="font-bold text-gray-700 mb-2">Chef's Notes:</h3>
+              <ul className="list-disc pl-5 space-y-1 text-gray-700">
+                <li>Use cold butter and handle the dough minimally for the flakiest crust</li>
+                <li>Salt the tomatoes and let them drain for 30 minutes to prevent a soggy bottom</li>
+                <li>For the best flavor, use a mix of fresh herbs - I prefer thyme, basil, and chives</li>
+                <li>Room temperature goat cheese spreads more easily than cold</li>
+              </ul>
+            </div>
+            <Link 
+              href="/recipes/heirloom-tomato-galette/index.html" 
+              className="inline-block px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md transition"
+            >
+              View Full Recipe
+            </Link>
+          </div>
+        </div>
+      </section>
+      
       <div className="relative h-96 rounded-xl overflow-hidden mb-16">
         <img 
           src="https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80" 
@@ -218,9 +263,95 @@ export default function SummerRecipesPage() {
             </ul>
           </div>
         </div>
+        
+        {/* Add technique video section */}
+        <div className="mt-10 pt-8 border-t border-gray-200">
+          <h3 className="text-xl font-bold text-gray-800 mb-4">My Essential Summer Technique: Perfect Quick Pickling</h3>
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="aspect-w-16 aspect-h-9 mb-4">
+              <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+            </div>
+            <p className="text-gray-700 mb-4">
+              Quick-pickling is my go-to technique for preserving summer's abundance and adding brightness to any dish. 
+              Unlike traditional canning, this method requires no special equipment and can be done in under 30 minutes.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-gray-800 mb-2">Basic Brine Ratio</h4>
+                <p className="text-sm text-gray-700">1 cup vinegar, 1 cup water, 2 tbsp salt, 2 tbsp sugar</p>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-gray-800 mb-2">Best Vegetables</h4>
+                <p className="text-sm text-gray-700">Cucumbers, radishes, red onions, carrots, green beans</p>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-gray-800 mb-2">Flavor Boosters</h4>
+                <p className="text-sm text-gray-700">Garlic, dill, peppercorns, mustard seeds, coriander</p>
+              </div>
+            </div>
+            <p className="text-gray-700 italic">
+              "I always keep a jar of quick-pickled red onions in my refrigerator during summer. They brighten up 
+              everything from tacos to salads to burgers, and they're the perfect way to use up excess produce."
+            </p>
+          </div>
+        </div>
       </section>
       
       <HorizontalAdBanner />
+      
+      {/* Community Section for Fresh Content */}
+      <section className="mb-16">
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">Summer Recipe Community</h2>
+        <div className="bg-white shadow-md rounded-lg overflow-hidden">
+          <div className="p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">Share Your Summer Cooking</h3>
+            <p className="text-gray-600 mb-6">
+              Our seasonal recipe collection grows with contributions from home cooks like you! Share your favorite 
+              summer recipes, cooking tips, or market finds. Selected submissions will be featured on our site and 
+              may win cooking prizes.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-lg">
+                <div className="bg-blue-100 rounded-full p-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-800">Recipe Comments</h4>
+                  <p className="text-sm text-gray-600">Share your tips, variations, and experiences with our recipes</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-lg">
+                <div className="bg-green-100 rounded-full p-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-800">Photo Submissions</h4>
+                  <p className="text-sm text-gray-600">Show off your own versions of our seasonal recipes</p>
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-500">Updated weekly with new submissions</span>
+              <Link 
+                href="/community/submit/index.html" 
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md transition text-sm"
+              >
+                Submit Your Recipe
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
       
       {/* Return to Seasonal */}
       <div className="text-center mt-10">

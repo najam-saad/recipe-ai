@@ -27,6 +27,29 @@ export default function SeasonalRecipesPage() {
         </p>
       </div>
       
+      <section className="bg-yellow-50 rounded-lg p-8 mb-12 border-l-4 border-yellow-400">
+        <div className="flex items-start">
+          <div className="bg-yellow-100 rounded-full p-3 mr-4">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-gray-800 mb-2">A Note From Our Chef</h2>
+            <p className="text-gray-700">
+              Having worked in restaurants for over 15 years, I've learned that seasonal cooking isn't just trendy—it's transformative. 
+              When I first started using farmers' markets instead of supermarkets, the difference in my dishes was remarkable. 
+              Tomatoes picked that morning have an intensity that's impossible to replicate with off-season produce.
+            </p>
+            <p className="text-gray-700 mt-3">
+              My personal trick is to build a "seasonal calendar"—I note when ingredients peak in my region and plan my menus accordingly. 
+              This practice has not only made me a better cook but has connected me to the rhythm of the growing seasons in ways I never expected.
+              The recipes shared here reflect this philosophy of working with nature, not against it.
+            </p>
+          </div>
+        </div>
+      </section>
+      
       <section className="mb-16">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-3xl font-bold text-gray-800">Current {currentSeason} Favorites</h2>
@@ -67,6 +90,56 @@ export default function SeasonalRecipesPage() {
         </div>
       </section>
       
+      <section className="bg-gray-50 rounded-lg p-8 mb-12">
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">My Top Seasonal Shopping Tips</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="flex items-center mb-3">
+              <span className="text-green-500 font-bold text-xl mr-2">01</span>
+              <h3 className="font-semibold text-lg">Shop The Perimeter First</h3>
+            </div>
+            <p className="text-gray-700">
+              I always tell my cooking students to lap the farmers' market or store once before buying anything. 
+              Note what looks exceptional that day and build your menu around these standouts, not the other way around.
+              This single habit improved my cooking more than any technique I learned in culinary school.
+            </p>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="flex items-center mb-3">
+              <span className="text-green-500 font-bold text-xl mr-2">02</span>
+              <h3 className="font-semibold text-lg">The Two-Day Rule</h3>
+            </div>
+            <p className="text-gray-700">
+              For delicate seasonal items like berries or fresh herbs, I follow a personal two-day rule: either use them 
+              within two days of purchase or preserve them (freeze, pickle, etc.). After two days, quality drops dramatically, 
+              and you lose the advantage of buying seasonal in the first place.
+            </p>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="flex items-center mb-3">
+              <span className="text-green-500 font-bold text-xl mr-2">03</span>
+              <h3 className="font-semibold text-lg">Talk To The Growers</h3>
+            </div>
+            <p className="text-gray-700">
+              At farmers' markets, I've received my best cooking education directly from producers. Ask them when they 
+              harvested the produce, how they suggest preparing it, and what will be coming next week. Their inside 
+              knowledge is invaluable and will transform how you cook.
+            </p>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="flex items-center mb-3">
+              <span className="text-green-500 font-bold text-xl mr-2">04</span>
+              <h3 className="font-semibold text-lg">The Color Principle</h3>
+            </div>
+            <p className="text-gray-700">
+              My "color principle" is simple: aim for at least three different colored produce items in your shopping 
+              basket. This guarantees nutritional variety and forces you to think beyond your usual choices. I've 
+              discovered some of my favorite ingredients this way, like purple cauliflower and watermelon radishes.
+            </p>
+          </div>
+        </div>
+      </section>
+      
       <section className="bg-gray-50 rounded-lg p-8 mb-16">
         <h2 className="text-3xl font-bold text-gray-800 mb-4">Cooking with Seasonal Ingredients</h2>
         <p className="text-gray-600 mb-4">
@@ -77,7 +150,21 @@ export default function SeasonalRecipesPage() {
           Our seasonal recipes guide helps you make the most of what's available throughout the year, 
           with creative ideas for everything from light spring salads to hearty winter stews.
         </p>
-        <Link href="/index.html" className="px-6 py-3 bg-red-500 hover:bg-red-600 rounded-lg text-white font-medium transition inline-flex items-center">
+        
+        <div className="bg-white p-6 rounded-lg shadow-sm mt-6 border-t-4 border-red-500">
+          <h3 className="font-bold text-xl mb-3">Monthly Seasonal Challenge</h3>
+          <p className="text-gray-700 mb-4">
+            Join our community of seasonal cooks! Each month, we feature a different seasonal ingredient and challenge
+            our readers to create unique recipes. Share your creation on social media with #SeasonalChef to be featured
+            on our site and enter to win cooking prizes.
+          </p>
+          <div className="bg-red-50 p-4 rounded-md">
+            <p className="font-medium">This month's ingredient: <span className="text-red-600">Sweet Corn</span></p>
+            <p className="text-sm mt-2">Submissions open until August 31st. Last month's winner created an amazing Strawberry Balsamic Galette!</p>
+          </div>
+        </div>
+        
+        <Link href="/index.html" className="px-6 py-3 bg-red-500 hover:bg-red-600 rounded-lg text-white font-medium transition inline-flex items-center mt-8">
           Create Your Own Seasonal Recipe
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
