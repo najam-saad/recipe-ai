@@ -61,6 +61,8 @@ function formatRecipe(text: string) {
 
 // Parse the recipe text into a structured object
 function parseRecipeText(text: string): Recipe {
+  console.log('Raw recipe text:', text.substring(0, 100) + '...');
+  
   // Default values
   const recipe: Recipe = {
     name: "Recipe",
@@ -70,42 +72,120 @@ function parseRecipeText(text: string): Recipe {
     instructions: []
   };
 
-  // Extract recipe title
-  const titleMatch = text.match(/Recipe Title:?\s*([^\n]+)/i) || text.match(/^# ([^\n]+)/m);
-  if (titleMatch) {
-    recipe.name = titleMatch[1].trim();
+  // Extract recipe title (try multiple patterns)
+  const titlePatterns = [
+    /Name:\s*([^\n]+)/i,
+    /Recipe Title:\s*([^\n]+)/i,
+    /^# ([^\n]+)/m,
+    /^([^\n:]+)(?:\n|$)/
+  ];
+  
+  for (const pattern of titlePatterns) {
+    const match = text.match(pattern);
+    if (match) {
+      recipe.name = match[1].trim();
+      break;
+    }
   }
 
   // Extract preparation time
-  const prepTimeMatch = text.match(/Preparation Time:?\s*([^\n]+)/i);
-  if (prepTimeMatch) {
-    recipe.preparationTime = prepTimeMatch[1].trim();
+  const prepTimePatterns = [
+    /Preparation Time:\s*([^\n]+)/i,
+    /Prep Time:\s*([^\n]+)/i,
+    /Prep:\s*([^\n]+)/i
+  ];
+  
+  for (const pattern of prepTimePatterns) {
+    const match = text.match(pattern);
+    if (match) {
+      recipe.preparationTime = match[1].trim();
+      break;
+    }
   }
 
   // Extract cooking time
-  const cookTimeMatch = text.match(/Cooking Time:?\s*([^\n]+)/i);
-  if (cookTimeMatch) {
-    recipe.cookingTime = cookTimeMatch[1].trim();
+  const cookTimePatterns = [
+    /Cooking Time:\s*([^\n]+)/i,
+    /Cook Time:\s*([^\n]+)/i,
+    /Cook:\s*([^\n]+)/i
+  ];
+  
+  for (const pattern of cookTimePatterns) {
+    const match = text.match(pattern);
+    if (match) {
+      recipe.cookingTime = match[1].trim();
+      break;
+    }
   }
 
-  // Extract ingredients
-  const ingredientsSection = text.match(/Ingredients:([\s\S]*?)(?=(Instructions:|Directions:|Steps:|Method:|$))/i);
-  if (ingredientsSection) {
-    const ingredientLines = ingredientsSection[1].trim().split('\n');
-    recipe.ingredients = ingredientLines
-      .map(line => line.replace(/^-\s*/, '').trim())
-      .filter(line => line.length > 0);
+  // Extract ingredients - try multiple section headers
+  const ingredientSectionPatterns = [
+    /Ingredients:([\s\S]*?)(?=(Instructions:|Directions:|Steps:|Method:|$))/i,
+    /Ingredients List:([\s\S]*?)(?=(Instructions:|Directions:|Steps:|Method:|$))/i
+  ];
+  
+  let ingredientsFound = false;
+  for (const pattern of ingredientSectionPatterns) {
+    const section = text.match(pattern);
+    if (section) {
+      const ingredientLines = section[1].trim().split('\n');
+      recipe.ingredients = ingredientLines
+        .map(line => line.replace(/^-\s*/, '').trim())
+        .filter(line => line.length > 0);
+      ingredientsFound = true;
+      break;
+    }
+  }
+  
+  // If no ingredients section found, try to extract list items
+  if (!ingredientsFound) {
+    const bulletPoints = text.match(/(?:^|\n)-\s*([^\n]+)/g);
+    if (bulletPoints) {
+      recipe.ingredients = bulletPoints
+        .map(line => line.replace(/^-\s*/, '').trim())
+        .filter(line => line.length > 0);
+    }
   }
 
-  // Extract instructions
-  const instructionsSection = text.match(/(Instructions:|Directions:|Steps:|Method:)([\s\S]*?)(?=(Tips:|Notes:|$))/i);
-  if (instructionsSection) {
-    const instructionLines = instructionsSection[2].trim().split('\n');
+  // Extract instructions - try multiple section headers
+  const instructionSectionPatterns = [
+    /(Instructions:|Directions:|Steps:|Method:)([\s\S]*?)(?=(Tips:|Notes:|$))/i,
+    /(\d+\.\s*)([^\n]+)/g
+  ];
+  
+  let instructionsFound = false;
+  // Try to find a section first
+  const section = text.match(instructionSectionPatterns[0]);
+  if (section) {
+    const instructionLines = section[2].trim().split('\n');
     recipe.instructions = instructionLines
       .map(line => line.replace(/^\d+\.?\s*/, '').trim())
       .filter(line => line.length > 0);
+    instructionsFound = true;
+  }
+  
+  // If no section, try to extract numbered points
+  if (!instructionsFound) {
+    const steps = [...text.matchAll(/(?:^|\n)(\d+)[\.\)]?\s*([^\n]+)/g)];
+    if (steps.length > 0) {
+      recipe.instructions = steps.map(match => match[2].trim());
+      instructionsFound = true;
+    }
+  }
+  
+  // If we still couldn't find ingredients or instructions, 
+  // and the text is really just a block, try splitting by double newlines
+  if ((!ingredientsFound || !instructionsFound) && text.split('\n\n').length > 1) {
+    const paragraphs = text.split('\n\n');
+    // Assume the last few paragraphs might be instructions
+    if (!instructionsFound && paragraphs.length > 1) {
+      recipe.instructions = paragraphs.slice(Math.max(1, paragraphs.length - 3))
+        .map(p => p.trim())
+        .filter(p => p.length > 0 && !p.match(/^(ingredients|instructions|steps|directions|method):/i));
+    }
   }
 
+  console.log('Parsed recipe:', recipe);
   return recipe;
 }
 
@@ -156,6 +236,8 @@ const RecipeGenerator: React.FC = () => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 60000); // 1 minute timeout
       
+      console.log(`Generating recipe for "${input}" (${type})`);
+      
       const res = await fetch("/api/recipe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -166,6 +248,7 @@ const RecipeGenerator: React.FC = () => {
       clearTimeout(timeoutId);
       
       const data = await res.json();
+      console.log("Response data:", data);
       
       if (data.recipe) {
         // Handle both string and object responses
@@ -450,7 +533,7 @@ const RecipeGenerator: React.FC = () => {
                   >
                     <path
                       fillRule="evenodd"
-                      d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                      d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 100-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
                       clipRule="evenodd"
                     />
                   </svg>

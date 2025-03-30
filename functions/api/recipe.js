@@ -28,14 +28,12 @@ export async function onRequest(context) {
       );
     }
 
-    // Construct a different prompt based on the type
+    // Construct a different prompt based on the type - more direct and focused prompt
     let prompt = '';
     if (type === 'ingredients') {
-      prompt = `Generate a detailed recipe using these ingredients: ${userInput}. 
-      Format the recipe with a name, preparation time, cooking time, ingredients list, and step-by-step instructions.`;
+      prompt = `Please generate a recipe using these ingredients: ${userInput}.\n\nFormat as follows:\nName: [Recipe Name]\nPreparation Time: [time]\nCooking Time: [time]\nIngredients:\n- [ingredient 1]\n- [ingredient 2]\nInstructions:\n1. [step 1]\n2. [step 2]`;
     } else {
-      prompt = `Generate a detailed recipe for ${userInput}. 
-      Format the recipe with a name, preparation time, cooking time, ingredients list, and step-by-step instructions.`;
+      prompt = `Please generate a recipe for ${userInput}.\n\nFormat as follows:\nName: [Recipe Name]\nPreparation Time: [time]\nCooking Time: [time]\nIngredients:\n- [ingredient 1]\n- [ingredient 2]\nInstructions:\n1. [step 1]\n2. [step 2]`;
     }
 
     // Check if API key is available
@@ -159,7 +157,7 @@ export async function onRequest(context) {
     }
     
     // Extracting the generated text from Hugging Face response
-    const generatedText = data[0]?.generated_text || '';
+    let generatedText = data[0]?.generated_text || '';
     
     if (!generatedText) {
       console.error('[Recipe API] Empty response from Hugging Face:', data);
@@ -172,12 +170,27 @@ export async function onRequest(context) {
       );
     }
     
-    // Clean up the response by removing the original prompt
-    const cleanedText = generatedText.replace(prompt, '').trim();
+    // Clean up the response - more robust cleaning
+    // First, remove the original prompt if present
+    if (generatedText.includes(prompt)) {
+      generatedText = generatedText.replace(prompt, '').trim();
+    }
+    
+    // If it starts with "Please generate" or similar, remove that intro text
+    generatedText = generatedText.replace(/^(Please generate|Here is|I'll generate|Sure|I'd be happy to)\s+.*?recipe[^:]*?:/i, '').trim();
+    
+    // If the response starts with a newline or other formatting characters, clean those up
+    generatedText = generatedText.replace(/^\s*[\n\r]+/, '');
+    
+    // Make sure the text has proper formatting for the frontend parser
+    if (!generatedText.includes('Name:') && !generatedText.includes('Recipe:') && !generatedText.includes('#')) {
+      // Add basic structure if missing
+      generatedText = `# ${userInput} Recipe\n\n${generatedText}`;
+    }
     
     console.log('[Recipe API] Successfully generated recipe');
     return new Response(
-      JSON.stringify({ recipe: cleanedText }),
+      JSON.stringify({ recipe: generatedText }),
       { 
         status: 200,
         headers: { "Content-Type": "application/json" }
