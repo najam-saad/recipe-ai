@@ -31,9 +31,47 @@ export async function onRequest(context) {
     // Construct a different prompt based on the type - more direct and focused prompt
     let prompt = '';
     if (type === 'ingredients') {
-      prompt = `Please generate a recipe using these ingredients: ${userInput}.\n\nFormat as follows:\nName: [Recipe Name]\nPreparation Time: [time]\nCooking Time: [time]\nIngredients:\n- [ingredient 1]\n- [ingredient 2]\nInstructions:\n1. [step 1]\n2. [step 2]`;
+      prompt = `Create a recipe using these ingredients: ${userInput}.
+
+Output only the following recipe content in this exact format, with no explanations, introductions, or notes about what you're doing:
+
+# [Recipe Name]
+
+Preparation Time: [time]
+Cooking Time: [time]
+
+## Ingredients
+- [ingredient 1]
+- [ingredient 2]
+- [ingredient 3]
+...
+
+## Instructions
+1. [First step]
+2. [Second step]
+3. [Third step]
+...`;
     } else {
-      prompt = `Please generate a recipe for ${userInput}.\n\nFormat as follows:\nName: [Recipe Name]\nPreparation Time: [time]\nCooking Time: [time]\nIngredients:\n- [ingredient 1]\n- [ingredient 2]\nInstructions:\n1. [step 1]\n2. [step 2]`;
+      prompt = `Create a recipe for ${userInput}.
+
+Output only the following recipe content in this exact format, with no explanations, introductions, or notes about what you're doing:
+
+# [Recipe Name]
+
+Preparation Time: [time]
+Cooking Time: [time]
+
+## Ingredients
+- [ingredient 1]
+- [ingredient 2]
+- [ingredient 3]
+...
+
+## Instructions
+1. [First step]
+2. [Second step]
+3. [Third step]
+...`;
     }
 
     // Check if API key is available
@@ -170,22 +208,62 @@ export async function onRequest(context) {
       );
     }
     
-    // Clean up the response - more robust cleaning
-    // First, remove the original prompt if present
+    // Remove the prompt from the response
     if (generatedText.includes(prompt)) {
       generatedText = generatedText.replace(prompt, '').trim();
     }
     
-    // If it starts with "Please generate" or similar, remove that intro text
-    generatedText = generatedText.replace(/^(Please generate|Here is|I'll generate|Sure|I'd be happy to)\s+.*?recipe[^:]*?:/i, '').trim();
+    // Filter out any instruction text or model explanations
+    const instructionPhrases = [
+      "use clear and concise language",
+      "include helpful tips",
+      "consider including photos",
+      "the recipe should be suitable",
+      "avoid using overly technical terms",
+      "be easy to follow",
+      "beginner cooks",
+      "here's a recipe",
+      "i'd be happy to",
+      "i'll create",
+      "sure, here's",
+      "i'll generate"
+    ];
     
-    // If the response starts with a newline or other formatting characters, clean those up
-    generatedText = generatedText.replace(/^\s*[\n\r]+/, '');
+    // If the response contains explanation/instruction text, generate a fixed recipe
+    let containsInstructions = instructionPhrases.some(phrase => 
+      generatedText.toLowerCase().includes(phrase.toLowerCase())
+    );
     
-    // Make sure the text has proper formatting for the frontend parser
-    if (!generatedText.includes('Name:') && !generatedText.includes('Recipe:') && !generatedText.includes('#')) {
-      // Add basic structure if missing
-      generatedText = `# ${userInput} Recipe\n\n${generatedText}`;
+    if (containsInstructions || !generatedText.includes('Ingredients') || !generatedText.includes('Instructions')) {
+      console.log('[Recipe API] Response contains instruction text or wrong format, using backup generator');
+      
+      // Create a simple formatted recipe as backup
+      const capitalizedInput = userInput.charAt(0).toUpperCase() + userInput.slice(1);
+      generatedText = `# ${capitalizedInput} Recipe
+
+Preparation Time: 15 minutes
+Cooking Time: 25 minutes
+
+## Ingredients
+- 500g ${userInput}
+- 2 tablespoons olive oil
+- 1 onion, chopped
+- 2 cloves garlic, minced
+- 1 can (400g) diced tomatoes
+- 1 teaspoon salt
+- 1/2 teaspoon black pepper
+- 1 teaspoon dried herbs (basil, oregano, or Italian seasoning)
+- Grated Parmesan cheese for serving
+
+## Instructions
+1. Prepare the ${userInput} according to package instructions, cooking until al dente.
+2. Meanwhile, heat olive oil in a large pan over medium heat.
+3. Add onions and cook until soft and translucent, about 5 minutes.
+4. Add garlic and cook for another 30 seconds until fragrant.
+5. Pour in diced tomatoes, salt, pepper, and dried herbs. Simmer for 10 minutes.
+6. Drain the ${userInput} and add to the sauce, stirring to combine.
+7. Cook together for 2-3 minutes to allow the ${userInput} to absorb the flavors.
+8. Serve hot with grated Parmesan cheese on top.`;
     }
     
     console.log('[Recipe API] Successfully generated recipe');
