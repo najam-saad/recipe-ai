@@ -5,31 +5,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useInView } from 'react-intersection-observer';
 import { InContentAdBanner } from './AdBanner';
+import { Recipe } from '@/lib/recipes';
 
-// Define the Recipe type
-export type Recipe = {
-  id: string;
-  slug: string;
-  name: string;
-  description?: string;
-  preparationTime: string;
-  cookingTime: string;
-  servings?: string;
-  difficulty?: string;
-  ingredients: string[];
-  instructions: string[];
-  image?: string;
-  category?: string;
-  keywords?: string;
-  publishedDate?: string;
-  nutrition?: {
-    calories?: string;
-    fat?: string;
-    carbs?: string;
-    protein?: string;
-  };
-};
-
+// Define the RecipeDetailProps type
 type RecipeDetailProps = {
   recipe: Recipe;
 };

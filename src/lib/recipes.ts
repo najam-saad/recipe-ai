@@ -1,4 +1,26 @@
-import { Recipe } from '@/components/RecipeDetail';
+// Export the Recipe type for use in other components
+export interface Recipe {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+  preparationTime: string;
+  cookingTime: string;
+  servings?: string;
+  difficulty?: string;
+  ingredients: string[];
+  instructions: string[];
+  image?: string;
+  category?: string;
+  keywords?: string;
+  publishedDate?: string;
+  nutrition?: {
+    calories?: string;
+    fat?: string;
+    carbs?: string;
+    protein?: string;
+  };
+}
 
 // Sample recipe data - in a real app, this would come from a database or API
 const sampleRecipes: Recipe[] = [
@@ -348,6 +370,52 @@ const sampleRecipes: Recipe[] = [
       fat: '8g',
       carbs: '45g',
       protein: '15g',
+    },
+  },
+  {
+    id: '7',
+    slug: 'grilled-peach-salad',
+    name: 'Grilled Peach & Burrata Salad',
+    description: 'Sweet grilled peaches paired with creamy burrata cheese, arugula, and a honey balsamic glaze. A perfect summer appetizer or light meal.',
+    preparationTime: '15 minutes',
+    cookingTime: '5 minutes',
+    servings: '4 servings',
+    difficulty: 'Easy',
+    ingredients: [
+      '4 ripe but firm peaches, halved and pitted',
+      '2 tablespoons olive oil, plus more for drizzling',
+      '2 tablespoons honey, divided',
+      '2 balls (8 oz total) fresh burrata cheese',
+      '6 cups fresh arugula',
+      '1/4 cup fresh basil leaves, torn',
+      '1/4 cup balsamic vinegar',
+      '1/4 cup toasted pine nuts',
+      'Salt and freshly ground black pepper, to taste',
+      'Optional: 1 tablespoon fresh thyme leaves'
+    ],
+    instructions: [
+      'Preheat your grill or grill pan to medium-high heat.',
+      'Brush the cut sides of the peaches with 1 tablespoon olive oil and 1 tablespoon honey.',
+      'Place the peaches cut-side down on the grill and cook for 3-4 minutes until grill marks appear and the peaches begin to soften slightly.',
+      'While the peaches are grilling, arrange the arugula on a large platter.',
+      'In a small saucepan, bring the balsamic vinegar to a simmer over medium heat. Reduce heat to low and simmer for 5-7 minutes until it thickens slightly to form a glaze. Remove from heat and stir in the remaining 1 tablespoon of honey.',
+      'Remove the peaches from the grill and let cool slightly.',
+      'Arrange the grilled peaches on top of the arugula.',
+      'Tear the burrata balls into pieces and scatter them around the peaches.',
+      'Sprinkle with torn basil leaves and pine nuts.',
+      'Drizzle the entire salad with the balsamic glaze, remaining 1 tablespoon of olive oil, and season with salt and freshly ground black pepper.',
+      'If using, sprinkle with fresh thyme leaves before serving.',
+      'Serve immediately while the peaches are still warm and the burrata is at room temperature.'
+    ],
+    image: 'https://images.unsplash.com/photo-1505253758473-96b7015fcd40?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    category: 'Summer Salad',
+    keywords: 'grilled peaches, burrata, summer salad, arugula, balsamic glaze, easy recipe, appetizer',
+    publishedDate: '2024-03-25',
+    nutrition: {
+      calories: '320 kcal',
+      fat: '24g',
+      carbs: '22g',
+      protein: '10g',
     },
   },
 ];
