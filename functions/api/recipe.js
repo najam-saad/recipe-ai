@@ -234,18 +234,63 @@ Cooking Time: [time]
       generatedText.toLowerCase().includes(phrase.toLowerCase())
     );
     
-    if (containsInstructions || !generatedText.includes('Ingredients') || !generatedText.includes('Instructions')) {
+    // Also check for empty placeholder steps like "Step 1:" without content
+    const hasEmptySteps = /\[Step \d+\]|\(Step \d+\)|Step \d+:(?!\s*[a-zA-Z])/i.test(generatedText);
+    
+    if (containsInstructions || hasEmptySteps || !generatedText.includes('Ingredients') || !generatedText.includes('Instructions')) {
       console.log('[Recipe API] Response contains instruction text or wrong format, using backup generator');
       
       // Create a simple formatted recipe as backup
       const capitalizedInput = userInput.charAt(0).toUpperCase() + userInput.slice(1);
-      generatedText = `# ${capitalizedInput} Recipe
-
-Preparation Time: 15 minutes
-Cooking Time: 25 minutes
-
-## Ingredients
-- 500g ${userInput}
+      
+      // Create a more tailored recipe based on the input
+      let recipeTitle, ingredients, instructions;
+      
+      // Customize based on common recipe keywords
+      if (userInput.includes('pasta') || userInput.includes('spaghetti')) {
+        recipeTitle = `Creamy ${capitalizedInput}`;
+        ingredients = `- 500g ${userInput.includes('spaghetti') ? 'spaghetti' : 'pasta'}
+- 2 tablespoons olive oil
+- 1 onion, finely chopped
+- 2 garlic cloves, minced
+- 8 ounces mushrooms, sliced
+- 1 cup heavy cream
+- 1/2 cup grated Parmesan cheese
+- Salt and pepper, to taste
+- Parsley, chopped (optional)`;
+        instructions = `1. Bring a large pot of salted water to a boil. Add ${userInput.includes('spaghetti') ? 'spaghetti' : 'pasta'} and cook until al dente, about 8-10 minutes.
+2. In a large skillet, heat olive oil over medium heat.
+3. Add onion and garlic, sauté until softened, about 3-4 minutes.
+4. Add mushrooms and cook until tender, about 5-6 minutes.
+5. Pour in heavy cream and stir to combine.
+6. Add Parmesan cheese and stir until cheese is melted and sauce is smooth.
+7. Season with salt and pepper to taste.
+8. Drain ${userInput.includes('spaghetti') ? 'spaghetti' : 'pasta'} and add to skillet with sauce.
+9. Toss ${userInput.includes('spaghetti') ? 'spaghetti' : 'pasta'} to ensure it's well coated.
+10. Serve immediately, garnished with chopped parsley, if desired.`;
+      } else if (userInput.includes('chicken')) {
+        recipeTitle = `Herb Roasted ${capitalizedInput}`;
+        ingredients = `- 4 chicken breasts
+- 2 tablespoons olive oil
+- 2 cloves garlic, minced
+- 1 teaspoon dried thyme
+- 1 teaspoon dried rosemary
+- 1 teaspoon paprika
+- 1/2 teaspoon salt
+- 1/4 teaspoon black pepper
+- 1 lemon, sliced
+- Fresh herbs for garnish (optional)`;
+        instructions = `1. Preheat oven to 425°F (220°C).
+2. In a small bowl, mix olive oil, garlic, thyme, rosemary, paprika, salt, and pepper.
+3. Place chicken breasts in a baking dish and brush with the herb mixture on both sides.
+4. Arrange lemon slices around and on top of the chicken.
+5. Bake for 20-25 minutes, or until chicken reaches an internal temperature of 165°F (74°C).
+6. Let rest for 5 minutes before serving.
+7. Garnish with fresh herbs if desired.`;
+      } else {
+        // Default recipe format for any other input
+        recipeTitle = `${capitalizedInput} Recipe`;
+        ingredients = `- Main ingredient: ${userInput}
 - 2 tablespoons olive oil
 - 1 onion, chopped
 - 2 cloves garlic, minced
@@ -253,17 +298,38 @@ Cooking Time: 25 minutes
 - 1 teaspoon salt
 - 1/2 teaspoon black pepper
 - 1 teaspoon dried herbs (basil, oregano, or Italian seasoning)
-- Grated Parmesan cheese for serving
-
-## Instructions
-1. Prepare the ${userInput} according to package instructions, cooking until al dente.
-2. Meanwhile, heat olive oil in a large pan over medium heat.
+- Additional ingredients as needed`;
+        instructions = `1. Prepare the ${userInput} by washing and cutting into appropriate sizes.
+2. Heat olive oil in a large pan over medium heat.
 3. Add onions and cook until soft and translucent, about 5 minutes.
 4. Add garlic and cook for another 30 seconds until fragrant.
-5. Pour in diced tomatoes, salt, pepper, and dried herbs. Simmer for 10 minutes.
-6. Drain the ${userInput} and add to the sauce, stirring to combine.
-7. Cook together for 2-3 minutes to allow the ${userInput} to absorb the flavors.
-8. Serve hot with grated Parmesan cheese on top.`;
+5. Add the ${userInput} to the pan and cook for 5-7 minutes.
+6. Pour in diced tomatoes, salt, pepper, and dried herbs. 
+7. Simmer for 15 minutes, stirring occasionally.
+8. Adjust seasoning to taste.
+9. Serve hot with your choice of side dish.`;
+      }
+      
+      // Combine into a well-formatted recipe
+      generatedText = `# ${recipeTitle}
+
+Preparation Time: 10 minutes
+Cooking Time: 20 minutes
+
+## Ingredients
+${ingredients}
+
+## Instructions
+${instructions}
+
+## Notes:
+- You can use any variety of ${userInput} for this recipe.
+- For a lighter version, you can reduce the amount of oil or cream.
+- Leftovers can be stored in an airtight container in the refrigerator for up to 3 days.`;
+    } else {
+      // Clean any residual placeholder text if the AI response is otherwise good
+      generatedText = generatedText.replace(/\[Step \d+\]|\(Step \d+\)|Step \d+:(?!\s*[a-zA-Z])/g, '');
+      generatedText = generatedText.replace(/\[ingredient \d+\]|\(ingredient \d+\)|ingredient \d+:(?!\s*[a-zA-Z])/g, '');
     }
     
     console.log('[Recipe API] Successfully generated recipe');
