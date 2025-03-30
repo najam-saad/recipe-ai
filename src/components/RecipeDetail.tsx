@@ -5,12 +5,36 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useInView } from 'react-intersection-observer';
 import { InContentAdBanner } from './AdBanner';
-import { Recipe } from '@/lib/recipes';
 
-// Define the RecipeDetailProps type
-type RecipeDetailProps = {
-  recipe: Recipe;
+// Export the Recipe type so it can be imported by other components
+export type Recipe = {
+  id?: string;
+  slug?: string;
+  name: string;
+  description?: string;
+  category?: string;
+  preparationTime: string;
+  cookingTime: string;
+  difficulty?: string;
+  servings?: string;
+  ingredients: string[];
+  instructions: string[];
+  image?: string;
+  publishedDate?: string;
+  author?: string;
+  keywords?: string;
+  nutrition?: {
+    calories?: string;
+    fat?: string;
+    carbs?: string;
+    protein?: string;
+  };
+  tags?: string[];
 };
+
+interface RecipeDetailProps {
+  recipe: Recipe;
+}
 
 const RecipeDetail: React.FC<RecipeDetailProps> = ({ recipe }) => {
   const [isClient, setIsClient] = useState(false);

@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getAllRecipes } from '@/lib/recipes';
-import type { Recipe } from '@/components/RecipeDetail';
+import { Recipe } from '@/components/RecipeDetail';
 import { HorizontalAdBanner, InFeedAdBanner } from '@/components/AdBanner';
 
 // Make this page static for export

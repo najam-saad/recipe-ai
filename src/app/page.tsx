@@ -116,7 +116,7 @@ export default function Home() {
             </h1>
 
             <p className="text-xl md:text-2xl text-white/90 max-w-xl mx-auto mb-10 leading-relaxed">
-              Transform ingredients into gourmet recipes. Get personalized cooking instructions in seconds.
+              Transform ingredients into gourmet recipes. Get personalized cooking instructions in seconds for just $1.
             </p>
 
             <button
@@ -137,6 +137,10 @@ export default function Home() {
                 />
               </svg>
             </button>
+            
+            <div className="mt-4 text-white/80 text-sm">
+              One-time $1 payment per recipe generation. Premium users enjoy unlimited recipes.
+            </div>
           </div>
         </div>
 
@@ -423,68 +427,68 @@ const AIDisclaimer = () => (
 
 // Add this footer to the page - modify the end of the file where there would be a closing div
 const Footer = () => (
-  <footer className="bg-white border-t border-gray-200 py-8 mt-16">
+  <footer className="bg-gray-900 text-white py-12">
     <div className="container mx-auto px-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Recipe Generator</h3>
-            <p className="text-gray-600 text-sm">
-              Create delicious meals with ingredients you already have. Our recipe generator helps you cook amazing dishes without the need for extra shopping.
-            </p>
-          </div>
-          
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Explore</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/recipes/popular/index.html" className="text-gray-600 hover:text-red-500 text-sm">
-                  Popular Recipes
-                </Link>
-              </li>
-              <li>
-                <Link href="/about/index.html" className="text-gray-600 hover:text-red-500 text-sm">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/privacy/index.html" className="text-gray-600 hover:text-red-500 text-sm">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms/index.html" className="text-gray-600 hover:text-red-500 text-sm">
-                  Terms of Service
-                </Link>
-              </li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Popular Searches</h3>
-            <div className="flex flex-wrap gap-2">
-              <Link href="/" className="inline-block bg-gray-100 hover:bg-gray-200 rounded-full px-3 py-1 text-xs text-gray-700">
-                Chicken recipes
-              </Link>
-              <Link href="/" className="inline-block bg-gray-100 hover:bg-gray-200 rounded-full px-3 py-1 text-xs text-gray-700">
-                Vegetarian meals
-              </Link>
-              <Link href="/" className="inline-block bg-gray-100 hover:bg-gray-200 rounded-full px-3 py-1 text-xs text-gray-700">
-                Quick dinner ideas
-              </Link>
-              <Link href="/" className="inline-block bg-gray-100 hover:bg-gray-200 rounded-full px-3 py-1 text-xs text-gray-700">
-                Pasta dishes
-              </Link>
-              <Link href="/" className="inline-block bg-gray-100 hover:bg-gray-200 rounded-full px-3 py-1 text-xs text-gray-700">
-                Healthy breakfast
-              </Link>
-            </div>
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <h3 className="text-xl font-bold mb-4">Recipe Generator</h3>
+          <p className="text-gray-400">
+            Transform ingredients into delicious recipes with AI-powered suggestions.
+          </p>
         </div>
-        
-        <div className="border-t border-gray-200 mt-8 pt-8 text-center text-sm text-gray-600">
-          <p>© {new Date().getFullYear()} Recipe Generator. All rights reserved.</p>
+        <div>
+          <h3 className="text-lg font-bold mb-4">Explore</h3>
+          <ul className="space-y-2">
+            <li>
+              <Link href="/recipes/popular/index.html" className="text-gray-400 hover:text-white transition">
+                Popular Recipes
+              </Link>
+            </li>
+            <li>
+              <Link href="/recipes/seasonal" className="text-gray-400 hover:text-white transition">
+                Seasonal Recipes
+              </Link>
+            </li>
+            <li>
+              <Link href="/premium" className="bg-gradient-to-r from-amber-400 to-amber-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                Premium Features ✨
+              </Link>
+            </li>
+          </ul>
         </div>
+        <div>
+          <h3 className="text-lg font-bold mb-4">Company</h3>
+          <ul className="space-y-2">
+            <li>
+              <Link href="/about/index.html" className="text-gray-400 hover:text-white transition">
+                About Us
+              </Link>
+            </li>
+            <li>
+              <Link href="/blog" className="text-gray-400 hover:text-white transition">
+                Blog
+              </Link>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h3 className="text-lg font-bold mb-4">Legal</h3>
+          <ul className="space-y-2">
+            <li>
+              <Link href="/privacy/index.html" className="text-gray-400 hover:text-white transition">
+                Privacy Policy
+              </Link>
+            </li>
+            <li>
+              <Link href="/terms/index.html" className="text-gray-400 hover:text-white transition">
+                Terms of Service
+              </Link>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500">
+        <p>&copy; {new Date().getFullYear()} Recipe Generator. All rights reserved.</p>
       </div>
     </div>
   </footer>

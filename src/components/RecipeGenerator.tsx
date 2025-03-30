@@ -1,14 +1,25 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import PaywallModal from './PaywallModal';
 
+// Add recipe type
 type Recipe = {
   name: string;
   preparationTime: string;
   cookingTime: string;
   ingredients: string[];
   instructions: string[];
+};
+
+// Add user plan type
+type UserPlan = 'free' | 'premium';
+
+// Add payment data type
+type PaymentData = {
+  paid: boolean;
+  timestamp: string;
 };
 
 // Helper function to format recipe text
@@ -214,6 +225,70 @@ function generateRecipeJsonLd(recipe: Recipe) {
   };
 }
 
+// Add this near the top of the file, after the parseRecipeText function
+function getUserPlan(): UserPlan {
+  // In a real app, this would check authentication status and user's subscription
+  // For now, we'll use localStorage to simulate a subscription
+  const plan = localStorage.getItem('userPlan') || 'free';
+  return plan as UserPlan;
+}
+
+function getRemainingGenerations(): number {
+  const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  const usageData = JSON.parse(localStorage.getItem('recipeGeneratorUsage') || '{}');
+  
+  // Reset if it's a new day
+  if (!usageData.date || usageData.date !== today) {
+    return 3; // Free tier gets 3 generations per day
+  }
+  
+  return Math.max(0, 3 - (usageData.count || 0));
+}
+
+function trackGeneration() {
+  const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  const usageData = JSON.parse(localStorage.getItem('recipeGeneratorUsage') || '{}');
+  
+  // Reset if it's a new day
+  if (!usageData.date || usageData.date !== today) {
+    localStorage.setItem('recipeGeneratorUsage', JSON.stringify({
+      date: today,
+      count: 1
+    }));
+    return;
+  }
+  
+  // Increment usage
+  localStorage.setItem('recipeGeneratorUsage', JSON.stringify({
+    date: today,
+    count: (usageData.count || 0) + 1
+  }));
+}
+
+// Add this function after the trackGeneration function
+function checkPaymentStatus(): boolean {
+  // In a real app, this would check against a database or payment provider API
+  // For now, using localStorage to simulate payment status
+  try {
+    const paymentData = JSON.parse(localStorage.getItem('recipeGeneratorPayment') || '{}') as PaymentData;
+    
+    if (!paymentData.paid) {
+      return false;
+    }
+    
+    // Check if the payment was made in the last 24 hours
+    const paidTime = new Date(paymentData.timestamp).getTime();
+    const currentTime = new Date().getTime();
+    const hoursSincePaid = (currentTime - paidTime) / (1000 * 60 * 60);
+    
+    // Payment is valid for 24 hours
+    return hoursSincePaid < 24;
+  } catch (error) {
+    console.error('Error checking payment status:', error);
+    return false;
+  }
+}
+
 const RecipeGenerator: React.FC = () => {
   const [input, setInput] = useState("");
   const [recipe, setRecipe] = useState<Recipe | null>(null);
@@ -222,10 +297,32 @@ const RecipeGenerator: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [saveSuccess, setSaveSuccess] = useState(false);
+  // Add these new state variables
+  const [userPlan, setUserPlan] = useState<UserPlan>('free');
+  const [remainingGenerations, setRemainingGenerations] = useState(3);
+  const [showPaywall, setShowPaywall] = useState(false);
+  const [isPaid, setIsPaid] = useState(false);
+
+  // Add useEffect to load user plan, remaining generations, and payment status
+  useEffect(() => {
+    // This runs only on the client side
+    setUserPlan(getUserPlan());
+    setRemainingGenerations(getRemainingGenerations());
+    setIsPaid(checkPaymentStatus());
+  }, []);
 
   const generateRecipe = async () => {
     if (!input.trim()) return;
     
+    // Check payment status
+    const hasPaid = checkPaymentStatus();
+    
+    // If not a premium user and hasn't paid for this session, show the paywall
+    if (userPlan !== 'premium' && !hasPaid) {
+      setShowPaywall(true);
+      return;
+    }
+
     setLoading(true);
     setError("");
     setRecipe(null);
@@ -238,52 +335,59 @@ const RecipeGenerator: React.FC = () => {
       
       console.log(`Generating recipe for "${input}" (${type})`);
       
+      // Get payment data to pass to the API for verification
+      const paymentData = localStorage.getItem('recipeGeneratorPayment') || '{}';
+      
       const res = await fetch("/api/recipe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userInput: input, type }),
+        body: JSON.stringify({ 
+          userInput: input, 
+          type,
+          paymentVerification: JSON.parse(paymentData)
+        }),
         signal: controller.signal
       });
       
       clearTimeout(timeoutId);
       
       const data = await res.json();
-      console.log("Response data:", data);
       
-      if (data.recipe) {
-        // Handle both string and object responses
-        if (typeof data.recipe === 'string') {
-          // Format the text for HTML display
-          setRecipeHtml(formatRecipe(data.recipe));
-          
-          // Also parse it into a structured object for the UI components
-          setRecipe(parseRecipeText(data.recipe));
-        } else {
-          setRecipe(data.recipe);
-        }
-        
-        // Display a notice if this is a fallback recipe
-        if (data.note) {
-          setError(data.note);
-        }
-      } else if (data.error) {
-        // Display a user-friendly error message based on the error
-        if (data.error.includes('temporarily unavailable')) {
-          setError("The recipe service is temporarily busy. Please try again in a few moments.");
-        } else if (data.error.includes('authentication')) {
-          setError("There was an issue connecting to the recipe service. Please try again later.");
-        } else {
-          setError(`${data.error}`);
-        }
+      if (!res.ok) {
+        setError(data.error || "Failed to generate recipe");
+        setLoading(false);
+        return;
       }
-    } catch (error: any) {
-      console.error("Recipe generation error:", error);
+
+      // Track usage for free tier users
+      if (userPlan === 'free') {
+        trackGeneration();
+        const remaining = getRemainingGenerations();
+        setRemainingGenerations(remaining);
+      }
+
+      // Process the recipe output
+      const recipeText = data.recipe;
       
-      // Provide specific error message for timeout
-      if (error.name === 'AbortError') {
-        setError("Request took too long. The recipe service might be busy. Please try again with simpler ingredients or recipe name.");
+      if (!recipeText) {
+        setError("Empty recipe generated. Please try again with different input.");
+        setLoading(false);
+        return;
+      }
+      
+      // Here we're updating the state with the raw recipe text
+      const formattedHtml = formatRecipe(recipeText);
+      setRecipeHtml(formattedHtml);
+      
+      // Parse the recipe text into structured data
+      const parsedRecipe = parseRecipeText(recipeText);
+      setRecipe(parsedRecipe);
+      
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        setError("Request timed out. Please try again.");
       } else {
-        setError("Error generating recipe. Please try again in a few moments.");
+        setError("Failed to generate recipe: " + (err.message || "Unknown error"));
       }
     } finally {
       setLoading(false);
@@ -332,6 +436,22 @@ const RecipeGenerator: React.FC = () => {
     setTimeout(() => setSaveSuccess(false), 3000);
   };
 
+  // Add handler for successful payment
+  const handlePaymentSuccess = () => {
+    setShowPaywall(false);
+    setIsPaid(true);
+    
+    // Store payment status in localStorage with proper typing
+    const paymentData: PaymentData = {
+      paid: true,
+      timestamp: new Date().toISOString()
+    };
+    localStorage.setItem('recipeGeneratorPayment', JSON.stringify(paymentData));
+    
+    // Proceed with recipe generation
+    generateRecipe();
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 pb-20">
       {/* Header */}
@@ -365,6 +485,28 @@ const RecipeGenerator: React.FC = () => {
               </svg>
               What would you like to cook?
             </h2>
+            
+            {/* Add plan indicator and usage information */}
+            <div className="flex justify-between items-center mb-6">
+              <div className="text-sm font-medium">
+                {userPlan === 'premium' ? (
+                  <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full">Premium Plan ✨</span>
+                ) : (
+                  <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full">
+                    Free Plan • {remainingGenerations} generations left today
+                  </span>
+                )}
+              </div>
+              
+              {userPlan === 'free' && (
+                <button 
+                  onClick={() => setShowPaywall(true)}
+                  className="text-sm text-red-600 hover:text-red-800 underline"
+                >
+                  Upgrade to Premium
+                </button>
+              )}
+            </div>
             
             <div className="animate-staggered-fade-in">
               {/* Type Toggle */}
@@ -605,6 +747,14 @@ const RecipeGenerator: React.FC = () => {
               )}
             </div>
           )}
+
+          {/* Add the PaywallModal component */}
+          <PaywallModal 
+            isOpen={showPaywall}
+            onClose={() => setShowPaywall(false)}
+            onPaymentSuccess={handlePaymentSuccess}
+            price="$1.00"
+          />
 
           {/* Return link */}
           <div className="text-center mt-12">
