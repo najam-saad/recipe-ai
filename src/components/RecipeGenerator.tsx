@@ -609,7 +609,7 @@ const RecipeGenerator: React.FC = () => {
           {/* Return link */}
           <div className="text-center mt-12">
             <Link
-              href="/"
+              href="/index.html"
               className="inline-flex items-center text-red-500 hover:text-red-700 font-medium"
             >
               <svg

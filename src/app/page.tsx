@@ -438,22 +438,22 @@ const Footer = () => (
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Explore</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/recipes/popular" className="text-gray-600 hover:text-red-500 text-sm">
+                <Link href="/recipes/popular/index.html" className="text-gray-600 hover:text-red-500 text-sm">
                   Popular Recipes
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-gray-600 hover:text-red-500 text-sm">
+                <Link href="/about/index.html" className="text-gray-600 hover:text-red-500 text-sm">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="text-gray-600 hover:text-red-500 text-sm">
+                <Link href="/privacy/index.html" className="text-gray-600 hover:text-red-500 text-sm">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="text-gray-600 hover:text-red-500 text-sm">
+                <Link href="/terms/index.html" className="text-gray-600 hover:text-red-500 text-sm">
                   Terms of Service
                 </Link>
               </li>

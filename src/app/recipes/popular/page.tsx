@@ -156,7 +156,7 @@ export default function PopularRecipes() {
               </p>
               
               <div className="flex justify-center mb-8">
-                <Link href="/" className="px-6 py-3 bg-red-500 hover:bg-red-600 rounded-lg text-white font-medium transition inline-flex items-center">
+                <Link href="/index.html" className="px-6 py-3 bg-red-500 hover:bg-red-600 rounded-lg text-white font-medium transition inline-flex items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5 mr-2"
@@ -231,7 +231,7 @@ export default function PopularRecipes() {
           
           <div className="text-center mt-12">
             <Link
-              href="/"
+              href="/index.html"
               className="inline-flex items-center text-red-500 hover:text-red-700 font-medium"
             >
               <svg

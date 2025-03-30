@@ -60,13 +60,13 @@ export default function About() {
               </p>
               
               <div className="flex flex-col md:flex-row gap-4 justify-center">
-                <Link href="/privacy" className="px-6 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 font-medium transition">
+                <Link href="/privacy/index.html" className="px-6 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 font-medium transition">
                   Privacy Policy
                 </Link>
-                <Link href="/terms" className="px-6 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 font-medium transition">
+                <Link href="/terms/index.html" className="px-6 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 font-medium transition">
                   Terms of Service
                 </Link>
-                <Link href="/" className="px-6 py-3 bg-red-500 hover:bg-red-600 rounded-lg text-white font-medium transition">
+                <Link href="/index.html" className="px-6 py-3 bg-red-500 hover:bg-red-600 rounded-lg text-white font-medium transition">
                   Try Recipe Generator
                 </Link>
               </div>

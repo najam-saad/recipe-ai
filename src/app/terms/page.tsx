@@ -67,7 +67,7 @@ export default function TermsOfService() {
           </div>
           
           <div className="mt-8 text-center">
-            <Link href="/" className="inline-flex items-center text-red-500 hover:text-red-700 font-medium">
+            <Link href="/index.html" className="inline-flex items-center text-red-500 hover:text-red-700 font-medium">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5 mr-2"
