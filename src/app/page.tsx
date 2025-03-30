@@ -40,6 +40,12 @@ export default function Home() {
       <>
         <HorizontalAdBanner />
         <RecipeGenerator />
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <AIDisclaimer />
+          </div>
+        </div>
+        <Footer />
       </>
     );
   }
@@ -385,6 +391,101 @@ export default function Home() {
           </button>
         </div>
       </section>
+
+      {/* AI Disclaimer */}
+      <div className="container mx-auto px-4 max-w-4xl">
+        <AIDisclaimer />
+      </div>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
+
+// Add this disclaimer statement to the page
+const AIDisclaimer = () => (
+  <div className="bg-gray-50 border-l-4 border-red-500 p-4 mt-8 mb-8 rounded-md">
+    <div className="flex">
+      <svg className="h-6 w-6 text-red-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+      </svg>
+      <div>
+        <p className="text-gray-700 text-sm">
+          <strong>AI-Generated Content:</strong> All recipes are created using artificial intelligence. 
+          While we strive for accuracy, please use your judgment regarding food safety, cooking times, 
+          and ingredient substitutions. Recipes should be used as inspiration and adjusted to your preferences.
+        </p>
+      </div>
+    </div>
+  </div>
+);
+
+// Add this footer to the page - modify the end of the file where there would be a closing div
+const Footer = () => (
+  <footer className="bg-white border-t border-gray-200 py-8 mt-16">
+    <div className="container mx-auto px-4">
+      <div className="max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Recipe Generator</h3>
+            <p className="text-gray-600 text-sm">
+              Create delicious meals with ingredients you already have. Our recipe generator helps you cook amazing dishes without the need for extra shopping.
+            </p>
+          </div>
+          
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Explore</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/recipes/popular" className="text-gray-600 hover:text-red-500 text-sm">
+                  Popular Recipes
+                </Link>
+              </li>
+              <li>
+                <Link href="/about" className="text-gray-600 hover:text-red-500 text-sm">
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy" className="text-gray-600 hover:text-red-500 text-sm">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="text-gray-600 hover:text-red-500 text-sm">
+                  Terms of Service
+                </Link>
+              </li>
+            </ul>
+          </div>
+          
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Popular Searches</h3>
+            <div className="flex flex-wrap gap-2">
+              <Link href="/" className="inline-block bg-gray-100 hover:bg-gray-200 rounded-full px-3 py-1 text-xs text-gray-700">
+                Chicken recipes
+              </Link>
+              <Link href="/" className="inline-block bg-gray-100 hover:bg-gray-200 rounded-full px-3 py-1 text-xs text-gray-700">
+                Vegetarian meals
+              </Link>
+              <Link href="/" className="inline-block bg-gray-100 hover:bg-gray-200 rounded-full px-3 py-1 text-xs text-gray-700">
+                Quick dinner ideas
+              </Link>
+              <Link href="/" className="inline-block bg-gray-100 hover:bg-gray-200 rounded-full px-3 py-1 text-xs text-gray-700">
+                Pasta dishes
+              </Link>
+              <Link href="/" className="inline-block bg-gray-100 hover:bg-gray-200 rounded-full px-3 py-1 text-xs text-gray-700">
+                Healthy breakfast
+              </Link>
+            </div>
+          </div>
+        </div>
+        
+        <div className="border-t border-gray-200 mt-8 pt-8 text-center text-sm text-gray-600">
+          <p>© {new Date().getFullYear()} Recipe Generator. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+);
