@@ -152,13 +152,21 @@ const RecipeGenerator: React.FC = () => {
     setRecipeHtml("");
 
     try {
+      // Add timeout for the fetch request
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000); // 1 minute timeout
+      
       const res = await fetch("/api/recipe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userInput: input, type }),
+        signal: controller.signal
       });
       
+      clearTimeout(timeoutId);
+      
       const data = await res.json();
+      
       if (data.recipe) {
         // Handle both string and object responses
         if (typeof data.recipe === 'string') {
@@ -176,11 +184,24 @@ const RecipeGenerator: React.FC = () => {
           setError(data.note);
         }
       } else if (data.error) {
-        setError(`Error: ${data.error}`);
+        // Display a user-friendly error message based on the error
+        if (data.error.includes('temporarily unavailable')) {
+          setError("The recipe service is temporarily busy. Please try again in a few moments.");
+        } else if (data.error.includes('authentication')) {
+          setError("There was an issue connecting to the recipe service. Please try again later.");
+        } else {
+          setError(`${data.error}`);
+        }
       }
-    } catch (error) {
-      setError("Error generating recipe. Please try again.");
-      console.error(error);
+    } catch (error: any) {
+      console.error("Recipe generation error:", error);
+      
+      // Provide specific error message for timeout
+      if (error.name === 'AbortError') {
+        setError("Request took too long. The recipe service might be busy. Please try again with simpler ingredients or recipe name.");
+      } else {
+        setError("Error generating recipe. Please try again in a few moments.");
+      }
     } finally {
       setLoading(false);
     }
