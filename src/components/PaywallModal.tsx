@@ -45,10 +45,32 @@ const PaywallModal: React.FC<PaywallModalProps> = ({
         }),
       });
       
-      const data = await response.json();
-      
+      // Handle non-OK responses before trying to parse JSON
       if (!response.ok) {
-        throw new Error(data.error || 'Payment failed');
+        const errorText = await response.text();
+        let errorMessage = 'Payment failed';
+        
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.error || errorMessage;
+        } catch (e) {
+          console.error('Error parsing error response:', e);
+        }
+        
+        throw new Error(errorMessage);
+      }
+      
+      // Get the response text first
+      const responseText = await response.text();
+      let data;
+      
+      // Try to parse it as JSON
+      try {
+        data = JSON.parse(responseText);
+      } catch (e) {
+        console.error('Error parsing JSON response:', e);
+        console.error('Raw response:', responseText);
+        throw new Error('Invalid response from payment service');
       }
       
       // Store payment status in localStorage with proper typing

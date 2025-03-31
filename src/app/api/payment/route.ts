@@ -6,7 +6,20 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(request: NextRequest) {
   try {
     // Parse the request body
-    const { amount, currency } = await request.json();
+    const body = await request.text();
+    let parsedBody;
+    
+    try {
+      parsedBody = JSON.parse(body);
+    } catch (jsonError) {
+      console.error('[Payment API] JSON parsing error:', jsonError);
+      return NextResponse.json(
+        { error: 'Invalid JSON in request body' }, 
+        { status: 400 }
+      );
+    }
+    
+    const { amount, currency } = parsedBody;
     
     // Validate request parameters
     if (!amount || !currency) {
@@ -29,19 +42,34 @@ export async function POST(request: NextRequest) {
     const transactionId = `tr_${Math.random().toString(36).substring(2, 15)}`;
     
     // Return a successful payment response
-    return NextResponse.json({
-      success: true,
-      amount: amount,
-      currency: currency,
-      transactionId: transactionId,
-      timestamp: new Date().toISOString()
-    });
+    return new NextResponse(
+      JSON.stringify({
+        success: true,
+        amount: amount,
+        currency: currency,
+        transactionId: transactionId,
+        timestamp: new Date().toISOString()
+      }),
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
     
   } catch (error) {
     console.error('[Payment API] Error:', error);
-    return NextResponse.json(
-      { error: 'Payment processing failed. Please try again.' }, 
-      { status: 500 }
+    return new NextResponse(
+      JSON.stringify({ 
+        error: 'Payment processing failed. Please try again.' 
+      }),
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
     );
   }
 } 
