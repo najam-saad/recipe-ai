@@ -116,7 +116,7 @@ export default function Home() {
             </h1>
 
             <p className="text-xl md:text-2xl text-white/90 max-w-xl mx-auto mb-10 leading-relaxed">
-              Transform ingredients into gourmet recipes. Get personalized cooking instructions in seconds for just $1.
+              Transform ingredients into gourmet recipes. Get personalized cooking instructions in seconds.
             </p>
 
             <button
@@ -137,10 +137,6 @@ export default function Home() {
                 />
               </svg>
             </button>
-            
-            <div className="mt-4 text-white/80 text-sm">
-              One-time $1 payment per recipe generation. Premium users enjoy unlimited recipes.
-            </div>
           </div>
         </div>
 

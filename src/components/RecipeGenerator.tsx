@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import PaywallModal from './PaywallModal';
 
 // Add recipe type
 type Recipe = {
@@ -15,12 +14,6 @@ type Recipe = {
 
 // Add user plan type
 type UserPlan = 'free' | 'premium';
-
-// Add payment data type
-type PaymentData = {
-  paid: boolean;
-  timestamp: string;
-};
 
 // Helper function to format recipe text
 function formatRecipe(text: string) {
@@ -265,30 +258,6 @@ function trackGeneration() {
   }));
 }
 
-// Add this function after the trackGeneration function
-function checkPaymentStatus(): boolean {
-  // In a real app, this would check against a database or payment provider API
-  // For now, using localStorage to simulate payment status
-  try {
-    const paymentData = JSON.parse(localStorage.getItem('recipeGeneratorPayment') || '{}') as PaymentData;
-    
-    if (!paymentData.paid) {
-      return false;
-    }
-    
-    // Check if the payment was made in the last 24 hours
-    const paidTime = new Date(paymentData.timestamp).getTime();
-    const currentTime = new Date().getTime();
-    const hoursSincePaid = (currentTime - paidTime) / (1000 * 60 * 60);
-    
-    // Payment is valid for 24 hours
-    return hoursSincePaid < 24;
-  } catch (error) {
-    console.error('Error checking payment status:', error);
-    return false;
-  }
-}
-
 const RecipeGenerator: React.FC = () => {
   const [input, setInput] = useState("");
   const [recipe, setRecipe] = useState<Recipe | null>(null);
@@ -297,32 +266,20 @@ const RecipeGenerator: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [saveSuccess, setSaveSuccess] = useState(false);
-  // Add these new state variables
+  // Keep user plan state for premium features
   const [userPlan, setUserPlan] = useState<UserPlan>('free');
   const [remainingGenerations, setRemainingGenerations] = useState(3);
-  const [showPaywall, setShowPaywall] = useState(false);
-  const [isPaid, setIsPaid] = useState(false);
 
-  // Add useEffect to load user plan, remaining generations, and payment status
+  // Simplify useEffect
   useEffect(() => {
     // This runs only on the client side
     setUserPlan(getUserPlan());
     setRemainingGenerations(getRemainingGenerations());
-    setIsPaid(checkPaymentStatus());
   }, []);
 
   const generateRecipe = async () => {
     if (!input.trim()) return;
     
-    // Check payment status
-    const hasPaid = checkPaymentStatus();
-    
-    // If not a premium user and hasn't paid for this session, show the paywall
-    if (userPlan !== 'premium' && !hasPaid) {
-      setShowPaywall(true);
-      return;
-    }
-
     setLoading(true);
     setError("");
     setRecipe(null);
@@ -335,16 +292,12 @@ const RecipeGenerator: React.FC = () => {
       
       console.log(`Generating recipe for "${input}" (${type})`);
       
-      // Get payment data to pass to the API for verification
-      const paymentData = localStorage.getItem('recipeGeneratorPayment') || '{}';
-      
       const res = await fetch("/api/recipe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
           userInput: input, 
-          type,
-          paymentVerification: JSON.parse(paymentData)
+          type
         }),
         signal: controller.signal
       });
@@ -436,22 +389,6 @@ const RecipeGenerator: React.FC = () => {
     setTimeout(() => setSaveSuccess(false), 3000);
   };
 
-  // Add handler for successful payment
-  const handlePaymentSuccess = () => {
-    setShowPaywall(false);
-    setIsPaid(true);
-    
-    // Store payment status in localStorage with proper typing
-    const paymentData: PaymentData = {
-      paid: true,
-      timestamp: new Date().toISOString()
-    };
-    localStorage.setItem('recipeGeneratorPayment', JSON.stringify(paymentData));
-    
-    // Proceed with recipe generation
-    generateRecipe();
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 pb-20">
       {/* Header */}
@@ -487,25 +424,14 @@ const RecipeGenerator: React.FC = () => {
             </h2>
             
             {/* Add plan indicator and usage information */}
-            <div className="flex justify-between items-center mb-6">
-              <div className="text-sm font-medium">
+            <div className="flex flex-col md:flex-row gap-4 items-center justify-between mb-8">
+              <div className="text-lg font-medium text-gray-700">
                 {userPlan === 'premium' ? (
-                  <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full">Premium Plan ✨</span>
+                  <span className="text-red-600">Premium Plan</span>
                 ) : (
-                  <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full">
-                    Free Plan • {remainingGenerations} generations left today
-                  </span>
+                  <span>Free Plan • {remainingGenerations} generations left today</span>
                 )}
               </div>
-              
-              {userPlan === 'free' && (
-                <button 
-                  onClick={() => setShowPaywall(true)}
-                  className="text-sm text-red-600 hover:text-red-800 underline"
-                >
-                  Upgrade to Premium
-                </button>
-              )}
             </div>
             
             <div className="animate-staggered-fade-in">
@@ -747,14 +673,6 @@ const RecipeGenerator: React.FC = () => {
               )}
             </div>
           )}
-
-          {/* Add the PaywallModal component */}
-          <PaywallModal 
-            isOpen={showPaywall}
-            onClose={() => setShowPaywall(false)}
-            onPaymentSuccess={handlePaymentSuccess}
-            price="$1.00"
-          />
 
           {/* Return link */}
           <div className="text-center mt-12">
