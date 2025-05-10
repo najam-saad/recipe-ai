@@ -1,10 +1,11 @@
-# *
+# See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+#
+# Allow crawling of all content
 User-agent: *
 Allow: /
 
-# Host
-Host: https://recipe-ai.vercel.app
+# Disallow crawling of Genkit specific paths if any are exposed
+# User-agent: *
+# Disallow: /api/genkit/
 
-# Sitemaps
-Sitemap: https://recipe-ai.vercel.app/sitemap.xml
-Sitemap: https://recipe-ai.vercel.app/sitemap-recipes.xml
+Sitemap: /sitemap.xml

@@ -1,21 +1,18 @@
-[site]
-bucket = ".next"
-pages_build_output_dir = ".next"
+# Cloudflare Pages configuration
+name = "recipe-sage"
+compatibility_date = "2023-11-21"
 
 [build]
 command = "npm run build"
-output_directory = ".next/static"
+output_directory = ".next"
 
-[build.environment]
-NODE_VERSION = "20.9.0"
+[site]
+bucket = ".next"
 
 [env.production]
-name = "recipe-ai-prod"
-routes = [
-  { pattern = "/*", zone_name = "example.com" }
-]
+NODE_VERSION = "20"
 
-[[redirects]]
-from = "/*"
-to = "/index.html"
-status = 200 
+# Fixes for Cloudflare Pages + Next.js
+[build.environment]
+NODE_VERSION = "20"
+NODE_OPTIONS = "--import=genkit/auto-register" 

@@ -1,0 +1,28 @@
+{
+  "buildConfig": {
+    "build": "npm run build:cloudflare",
+    "outputDirectory": ".next",
+    "rootDirectory": null,
+    "nodeVersion": "20"
+  },
+  "deploymentConfigs": {
+    "routes": [
+      { 
+        "pattern": "/*.*", 
+        "zone": { "type": "boundary" } 
+      },
+      { 
+        "pattern": "/_next/*", 
+        "zone": { "type": "static" } 
+      },
+      { 
+        "pattern": "/*", 
+        "zone": { "type": "dynamic" } 
+      }
+    ],
+    "env": {
+      "NEXT_TELEMETRY_DISABLED": "1",
+      "NODE_OPTIONS": "--import=genkit/auto-register"
+    }
+  }
+} 
