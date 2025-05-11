@@ -20,20 +20,41 @@ const nextConfig: NextConfig = {
     ],
     unoptimized: true, // This helps with Cloudflare Pages deployment
   },
-  // Explicitly set output mode to ensure compatibility with Cloudflare
-  output: 'standalone',
+  // Use "export" instead of "standalone" for Cloudflare Pages
+  // This creates a static build compatible with Cloudflare Pages
+  output: 'export',
   
   // Configure webpack to create smaller chunks
   webpack: (config, { isServer }) => {
-    // Optimize chunk size for Cloudflare Pages (25MB limit)
+    // Optimize chunk size for both client and server
     config.optimization.splitChunks = {
       chunks: 'all',
       maxInitialRequests: 25,
       minSize: 20000,
-      maxSize: 20000000, // 20MB (under Cloudflare's 25MB limit)
+      maxSize: 15000000, // 15MB (under Cloudflare's 25MB limit)
     };
     
+    // Apply additional server-side optimizations
+    if (isServer) {
+      // Add specific server-side optimizations
+      config.optimization.minimize = true;
+      
+      // Exclude large dependencies from the server bundle if possible
+      config.externals = [...(config.externals || []), 
+        // Add any large dependencies that can be loaded at runtime
+        // This can help reduce the server bundle size
+        '@genkit-ai/googleai',
+        'genkit',
+      ];
+    }
+    
     return config;
+  },
+  
+  // Disable image optimization since we're using unoptimized images
+  experimental: {
+    // These experimental features help with static exports
+    optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
   },
 };
 
