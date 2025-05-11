@@ -20,9 +20,8 @@ const nextConfig: NextConfig = {
     ],
     unoptimized: true, // This helps with Cloudflare Pages deployment
   },
-  // Use "export" instead of "standalone" for Cloudflare Pages
-  // This creates a static build compatible with Cloudflare Pages
-  output: 'export',
+  // Back to standalone for server actions support
+  output: 'standalone',
   
   // Configure webpack to create smaller chunks
   webpack: (config, { isServer }) => {
@@ -38,22 +37,13 @@ const nextConfig: NextConfig = {
     if (isServer) {
       // Add specific server-side optimizations
       config.optimization.minimize = true;
-      
-      // Exclude large dependencies from the server bundle if possible
-      config.externals = [...(config.externals || []), 
-        // Add any large dependencies that can be loaded at runtime
-        // This can help reduce the server bundle size
-        '@genkit-ai/googleai',
-        'genkit',
-      ];
     }
     
     return config;
   },
   
-  // Disable image optimization since we're using unoptimized images
+  // Optimize package imports
   experimental: {
-    // These experimental features help with static exports
     optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
   },
 };
