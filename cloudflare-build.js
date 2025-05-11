@@ -8,6 +8,24 @@ function log(message) {
   console.log(`[${new Date().toISOString()}] ${message}`);
 }
 
+// Function to delete directory recursively
+function deleteFolderRecursive(folderPath) {
+  if (fs.existsSync(folderPath)) {
+    fs.readdirSync(folderPath).forEach((file) => {
+      const curPath = path.join(folderPath, file);
+      if (fs.lstatSync(curPath).isDirectory()) {
+        // Recursive call
+        deleteFolderRecursive(curPath);
+      } else {
+        // Delete file
+        fs.unlinkSync(curPath);
+      }
+    });
+    fs.rmdirSync(folderPath);
+    log(`Removed directory: ${folderPath}`);
+  }
+}
+
 // Main function
 async function main() {
   try {
@@ -20,17 +38,12 @@ async function main() {
     const cacheDir = path.join('.next', 'cache', 'webpack');
     
     if (fs.existsSync(cacheDir)) {
-      const files = fs.readdirSync(cacheDir, { recursive: true });
-      
-      // Look for large pack files
-      for (const file of files) {
-        const filePath = path.join(cacheDir, file);
-        if (fs.statSync(filePath).isFile() && file.endsWith('.pack')) {
-          log(`Removing large webpack cache file: ${filePath}`);
-          fs.unlinkSync(filePath);
-        }
-      }
+      log(`Removing webpack cache directory: ${cacheDir}`);
+      deleteFolderRecursive(cacheDir);
     }
+    
+    // Create an empty cache directory to maintain structure
+    fs.mkdirSync(cacheDir, { recursive: true });
     
     log('Build completed successfully');
   } catch (error) {

@@ -3,6 +3,9 @@ name = "recipe-sage"
 compatibility_date = "2023-11-21"
 pages_build_output_dir = ".next"
 
+# Custom build command to clean up large files
+build.command = "node cloudflare-build.js"
+
 # Node.js version
 [env.production]
 NODE_VERSION = "20" 

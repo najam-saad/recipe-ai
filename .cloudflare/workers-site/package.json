@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "name": "recipe-sage-worker",
+  "version": "1.0.0",
+  "description": "Cloudflare worker for Recipe Sage",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Recipe Sage",
+  "license": "MIT",
+  "dependencies": {
+    "@cloudflare/kv-asset-handler": "^0.3.0"
+  }
+} 
