@@ -1,18 +1,8 @@
 # Cloudflare Pages configuration
 name = "recipe-sage"
 compatibility_date = "2023-11-21"
+pages_build_output_dir = ".next"
 
-[build]
-command = "npm run build"
-output_directory = ".next"
-
-[site]
-bucket = ".next"
-
+# Node.js version
 [env.production]
-NODE_VERSION = "20"
-
-# Fixes for Cloudflare Pages + Next.js
-[build.environment]
-NODE_VERSION = "20"
-NODE_OPTIONS = "--import=genkit/auto-register" 
+NODE_VERSION = "20" 

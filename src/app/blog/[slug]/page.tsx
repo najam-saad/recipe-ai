@@ -1,7 +1,12 @@
 import { notFound } from 'next/navigation';
 import { blogPosts } from '@/content/blogPosts';
 import type { BlogPost } from '@/types';
-import BlogPostDisplay from './BlogPostDisplay';
+import dynamic from 'next/dynamic';
+
+// Use dynamic import to load the client component
+const DynamicBlogPostDisplay = dynamic(() => import('./BlogPostDisplay'), {
+  ssr: true,
+});
 
 // This function can be used by Next.js to generate static paths at build time
 export async function generateStaticParams() {
@@ -21,5 +26,6 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     notFound();
   }
 
-  return <BlogPostDisplay post={post} />;
+  // Using dynamic import with ssr:true creates a proper client/server boundary
+  return <DynamicBlogPostDisplay post={post} />;
 }
