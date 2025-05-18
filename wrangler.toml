@@ -5,4 +5,19 @@ pages_build_output_dir = ".next"
 
 # Node.js version
 [env.production]
-NODE_VERSION = "20" 
+NODE_VERSION = "20"
+
+# Build settings
+[build]
+command = "npm run build"
+output_dir = ".next"
+
+# Environment variables
+[vars]
+NEXT_PUBLIC_APP_URL = "https://recipe-sage.pages.dev"
+NEXT_TELEMETRY_DISABLED = "1"
+
+# Cache settings
+[cache]
+browser_ttl = 3600
+edge_ttl = 86400 
