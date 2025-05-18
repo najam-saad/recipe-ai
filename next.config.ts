@@ -31,6 +31,17 @@ const nextConfig: NextConfig = {
       { module: /handlebars/ },
     ];
 
+    // Handle self reference error
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        crypto: false,
+      };
+    }
+
     // Optimize chunk size for both client and server
     config.optimization.splitChunks = {
       chunks: 'all',
