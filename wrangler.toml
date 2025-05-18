@@ -1,5 +1,5 @@
 # Cloudflare Pages configuration
-name = "recipe-sage"
+name = "recipe-ai4"
 compatibility_date = "2023-11-21"
 pages_build_output_dir = ".next"
 
@@ -9,5 +9,5 @@ NODE_VERSION = "20"
 
 # Environment variables
 [vars]
-NEXT_PUBLIC_APP_URL = "https://recipe-sage.pages.dev"
+NEXT_PUBLIC_APP_URL = "https://24e06dda.recipe-ai4.pages.dev"
 NEXT_TELEMETRY_DISABLED = "1" 
