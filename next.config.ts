@@ -45,8 +45,14 @@ const nextConfig: NextConfig = {
           test: /[\\/]node_modules[\\/]/,
           chunks: 'all',
           name(module: any) {
-            const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
-            return `npm.${packageName.replace('@', '')}`;
+            // Handle null or undefined module.context
+            if (!module.context) return 'vendor';
+            
+            // Safe regex match
+            const match = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/);
+            if (!match || !match[1]) return 'vendor';
+            
+            return `npm.${match[1].replace('@', '')}`;
           },
           priority: 30,
         },
