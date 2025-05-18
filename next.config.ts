@@ -84,9 +84,9 @@ const nextConfig: NextConfig = {
       'framer-motion',
       'date-fns',
     ],
-    // Enable memory optimizations
+    // Disable CSS optimization to avoid critters issues
     memoryBasedWorkersCount: true,
-    optimizeCss: true,
+    optimizeCss: false,
   },
 };
 
