@@ -23,8 +23,14 @@ const nextConfig: NextConfig = {
   // Back to standalone for server actions support
   output: 'standalone',
   
-  // Configure webpack to create smaller chunks
+  // Configure webpack to create smaller chunks and handle warnings
   webpack: (config, { isServer }) => {
+    // Ignore warnings from specific packages
+    config.ignoreWarnings = [
+      { module: /@opentelemetry\/sdk-node/ },
+      { module: /handlebars/ },
+    ];
+
     // Optimize chunk size for both client and server
     config.optimization.splitChunks = {
       chunks: 'all',
@@ -84,9 +90,8 @@ const nextConfig: NextConfig = {
       'framer-motion',
       'date-fns',
     ],
-    // Disable CSS optimization to avoid critters issues
+    // Enable memory optimizations
     memoryBasedWorkersCount: true,
-    optimizeCss: false,
   },
 };
 
