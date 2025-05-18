@@ -69,7 +69,8 @@ async function main() {
       stdio: 'inherit',
       env: {
         ...process.env,
-        NODE_OPTIONS: '--max-old-space-size=2048'
+        NODE_OPTIONS: '--max-old-space-size=2048',
+        NEXT_TELEMETRY_DISABLED: '1'
       }
     });
     
