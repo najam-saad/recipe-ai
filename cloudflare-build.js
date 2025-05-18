@@ -26,24 +26,56 @@ function deleteFolderRecursive(folderPath) {
   }
 }
 
+// Function to clean up unnecessary files
+function cleanupBuild() {
+  const dirsToClean = [
+    path.join('.next', 'cache'),
+    path.join('.next', 'server', 'app', 'api'),
+    path.join('.next', 'server', 'pages', 'api'),
+  ];
+
+  dirsToClean.forEach(dir => {
+    if (fs.existsSync(dir)) {
+      log(`Cleaning up directory: ${dir}`);
+      deleteFolderRecursive(dir);
+    }
+  });
+
+  // Clean up source maps
+  const cleanSourceMaps = (dir) => {
+    if (fs.existsSync(dir)) {
+      fs.readdirSync(dir).forEach(file => {
+        if (file.endsWith('.map')) {
+          fs.unlinkSync(path.join(dir, file));
+          log(`Removed source map: ${file}`);
+        }
+      });
+    }
+  };
+
+  cleanSourceMaps(path.join('.next', 'static', 'chunks'));
+  cleanSourceMaps(path.join('.next', 'static', 'css'));
+}
+
 // Main function
 async function main() {
   try {
+    // Set Node.js memory limit
+    process.env.NODE_OPTIONS = '--max-old-space-size=2048';
+    
     // Build the Next.js app
     log('Building Next.js app...');
-    execSync('npm run build', { stdio: 'inherit' });
+    execSync('npm run build:cloudflare', { 
+      stdio: 'inherit',
+      env: {
+        ...process.env,
+        NODE_OPTIONS: '--max-old-space-size=2048'
+      }
+    });
     
-    // Clean up large cache files that Cloudflare doesn't need
-    log('Cleaning up webpack cache files...');
-    const cacheDir = path.join('.next', 'cache', 'webpack');
-    
-    if (fs.existsSync(cacheDir)) {
-      log(`Removing webpack cache directory: ${cacheDir}`);
-      deleteFolderRecursive(cacheDir);
-    }
-    
-    // Create an empty cache directory to maintain structure
-    fs.mkdirSync(cacheDir, { recursive: true });
+    // Clean up unnecessary files
+    log('Cleaning up build artifacts...');
+    cleanupBuild();
     
     log('Build completed successfully');
   } catch (error) {

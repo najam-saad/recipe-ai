@@ -28,23 +28,59 @@ const nextConfig: NextConfig = {
     // Optimize chunk size for both client and server
     config.optimization.splitChunks = {
       chunks: 'all',
-      maxInitialRequests: 25,
+      maxInitialRequests: 20,
       minSize: 20000,
-      maxSize: 15000000, // 15MB (under Cloudflare's 25MB limit)
+      maxSize: 10000000, // Reduced to 10MB
+      cacheGroups: {
+        default: false,
+        vendors: false,
+        framework: {
+          chunks: 'all',
+          name: 'framework',
+          test: /[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-subscription)[\\/]/,
+          priority: 40,
+          enforce: true,
+        },
+        lib: {
+          test: /[\\/]node_modules[\\/]/,
+          chunks: 'all',
+          name(module: any) {
+            const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
+            return `npm.${packageName.replace('@', '')}`;
+          },
+          priority: 30,
+        },
+        commons: {
+          name: 'commons',
+          minChunks: 2,
+          priority: 20,
+        },
+      },
     };
     
-    // Apply additional server-side optimizations
-    if (isServer) {
-      // Add specific server-side optimizations
-      config.optimization.minimize = true;
-    }
+    // Apply additional optimizations
+    config.optimization.minimize = true;
+    config.optimization.minimizer = config.optimization.minimizer || [];
+    
+    // Reduce memory usage
+    config.optimization.moduleIds = 'deterministic';
+    config.optimization.runtimeChunk = 'single';
     
     return config;
   },
   
   // Optimize package imports
   experimental: {
-    optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
+    optimizePackageImports: [
+      '@radix-ui/react-icons',
+      'lucide-react',
+      '@radix-ui/react-*',
+      'framer-motion',
+      'date-fns',
+    ],
+    // Enable memory optimizations
+    memoryBasedWorkersCount: true,
+    optimizeCss: true,
   },
 };
 
