@@ -6,6 +6,13 @@ pages_build_output_dir = ".next"
 # Node.js version
 [env.production]
 NODE_VERSION = "20"
+NEXT_PUBLIC_APP_URL = "https://recipe-ai4.pages.dev"
+NEXT_TELEMETRY_DISABLED = "1"
+
+# Preview environment
+[env.preview]
+NODE_VERSION = "20"
+NEXT_TELEMETRY_DISABLED = "1"
 
 # Environment variables
 [vars]
