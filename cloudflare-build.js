@@ -61,7 +61,7 @@ function cleanupBuild() {
 async function main() {
   try {
     // Set Node.js memory limit
-    process.env.NODE_OPTIONS = '--max-old-space-size=2048';
+    // process.env.NODE_OPTIONS = '--max-old-space-size=2048';
     
     // Build the Next.js app
     log('Building Next.js app...');
@@ -69,7 +69,7 @@ async function main() {
       stdio: 'inherit',
       env: {
         ...process.env,
-        NODE_OPTIONS: '--max-old-space-size=2048',
+        // NODE_OPTIONS: '--max-old-space-size=2048',
         NEXT_TELEMETRY_DISABLED: '1'
       }
     });
