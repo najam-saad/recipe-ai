@@ -8,7 +8,7 @@ pages_build_output_dir = ".next"
 NODE_VERSION = "20"
 
 [env.production.vars]
-NEXT_PUBLIC_APP_URL = "https://recipe-ai4.pages.dev"
+NEXT_PUBLIC_APP_URL = "https://recipegeniefree.com"
 NEXT_TELEMETRY_DISABLED = "1"
 
 # Preview environment
